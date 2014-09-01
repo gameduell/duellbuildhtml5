@@ -7,15 +7,9 @@ package duell.build.plugin.platform;
 
 typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
-DEFAULT_BROWSER : String,
-SWF_NAME : String,
 WIDTH : String,
 HEIGHT : String,
-SWF_VERSION : String,
-TARGET_PLAYER : String,
-BUILD_DIR : String,
-FPS  : String,
-BGCOLOR : String,
+BGCOLOR : String
 }
 
 class PlatformConfiguration
@@ -45,6 +39,9 @@ class PlatformConfiguration
 	    _configuration = 
 	    {
 			PLATFORM_NAME : "html5",
+			WIDTH : "800",
+			HEIGHT : "600",
+			BGCOLOR : "#FFF"//same as #FFFFFF
 	    };
 	}
 
