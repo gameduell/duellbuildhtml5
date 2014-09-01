@@ -36,10 +36,31 @@ import duell.helpers.LogHelper;
 				continue;
 			switch (element.name) 
 			{
+				case "win-size":
+					parseWinSize(element);
+				case "style":
+					parseStyle(element);
 			}
 		}
 	}
-	
+	public static function parseStyle(element : Fast) : Void
+	{
+	    if(element.has.bgColor)
+	    {
+	    	PlatformConfiguration.getData().BGCOLOR = element.att.bgColor;      
+	    }
+	}
+	public static function parseWinSize(element : Fast) : Void
+	{
+	    if(element.has.width)
+	    {
+	    	PlatformConfiguration.getData().WIDTH = element.att.width;
+	    }
+	    if(element.has.height)
+	    {
+	    	PlatformConfiguration.getData().HEIGHT = element.att.height;
+	    }
+	}
 	
 	private static function resolvePath(string : String) : String /// convenience method
 	{
