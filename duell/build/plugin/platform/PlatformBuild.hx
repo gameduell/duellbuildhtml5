@@ -17,12 +17,14 @@
 
  class PlatformBuild
  {
- 	public var requiredSetups = ["html5"];
+ 	public var requiredSetups = [];
 
+ 	private static var isDebug : Bool = false;
 
  	public var targetDirectory : String;
  	public var duellBuildHtml5Path : String;
  	public var projectDirectory : String;
+ 	
  	public function new()
  	{
  		checkArguments();
@@ -31,6 +33,10 @@
  	{
 		for (arg in Sys.args())
 		{
+			if (arg == "-debug")
+			{
+				isDebug = true;
+			}		
 		}
 
  	}
@@ -46,12 +52,12 @@
  	}
  	public function prepareBuild() : Void
  	{
- 	    targetDirectory = Configuration.getData().OUTPUT + "/";
- 	    projectDirectory = targetDirectory + "/";
+ 	    targetDirectory = Configuration.getData().OUTPUT+"/" ;
+ 	    projectDirectory = targetDirectory+"/" ;
  	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
- 	    prepareFlashBuild();
+ 	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
  	}
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
@@ -78,7 +84,7 @@
  	{
 		LogHelper.info("", "" + Configuration.getData());
 		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
-		// ProcessHelper.runCommand(targetDirectory+"/html5/hxml/","haxe",["Build.hxml"]);
+		ProcessHelper.runCommand(targetDirectory+"html5/hxml/","haxe",["Build.hxml"]);
  	}
 
  	public function run() : Void
@@ -87,10 +93,15 @@
  	}
  	public function runApp() : Void
  	{
-
+ 	    var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
+ 	    if(result != 0)
+ 	    {
+ 	    	LogHelper.error ("could not launch the application");
+ 	    }
  	}
- 	public function prepareFlashBuild() : Void
+ 	public function prepareHtml5Build() : Void
  	{
+ 		trace(Configuration.getData());
  	    createDirectoryAndCopyTemplate();
  	}
  	public function createDirectoryAndCopyTemplate() : Void
@@ -100,19 +111,19 @@
 
  	    ///copying template files 
  	    /// index.html, expressInstall.swf and swiftObject.js
- 	    TemplateHelper.recursiveCopyTemplatedFiles(duellBuildHtml5Path + "template/", projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+ 	    TemplateHelper.recursiveCopyTemplatedFiles(duellBuildHtml5Path + "template", projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
 	{	
 
 		for (define in DuellProjectXML.getConfig().parsingConditions)
 		{
-			// if (define == "debug" )
-			// {
-			// 	/// not allowed
-			// 	Configuration.getData().HAXE_COMPILE_ARGS.push("-debug");
-			// 	continue;
-			// } 
+			if (define == "debug" )
+			{
+				/// not allowed
+				Configuration.getData().HAXE_COMPILE_ARGS.push("-debug");
+				continue;
+			} 
 
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D");
 			Configuration.getData().HAXE_COMPILE_ARGS.push(define);
