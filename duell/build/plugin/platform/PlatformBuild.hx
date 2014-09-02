@@ -66,6 +66,11 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
+
+ 	    if(applicationWillRunAfterBuild)
+ 	    {
+ 	    	prepareAndRunHTTPServer();
+ 	    }
  	}
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
@@ -100,16 +105,14 @@
  	}
  	public function runApp() : Void
  	{
-		var result : Int = prepareAndRunHTTPServer();
 		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildHtml5Path+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
 		ProcessHelper.runCommand(duellBuildHtml5Path+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
 
  	}
- 	public function prepareAndRunHTTPServer() : Int
+ 	public function prepareAndRunHTTPServer() : Void
  	{
  		var args:Array<String> = [duellBuildHtml5Path+"bin/node/http-server/http-server",targetDirectory+"html5/web","-p", "3000", "-c-1"];
  	    serverProcess = new Process(duellBuildHtml5Path+"/bin/node/node-mac",args);
- 	    return 0;
  	}
  	public function prepareHtml5Build() : Void
  	{
