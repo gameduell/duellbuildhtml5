@@ -40,6 +40,9 @@ import duell.helpers.LogHelper;
 					parseWinSize(element);
 				case "style":
 					parseStyle(element);
+				case "head-section":
+					parseHeadSection(element);
+
 			}
 		}
 	}
@@ -67,4 +70,8 @@ import duell.helpers.LogHelper;
 		return DuellProjectXML.getConfig().resolvePath(string);
 	}
 
+	private static function parseHeadSection(element : Fast)
+	{
+		PlatformConfiguration.getData().HEAD_SECTIONS.push(element.innerHTML);
+	}
  }

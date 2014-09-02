@@ -4,35 +4,19 @@
     <head>
 
         <title>::APP.TITLE::</title>
-
-        <style>
-
-            #duell-view {
-                display: block;
-                width: ::PLATFORM.WIDTH::px;
-                height: ::PLATFORM.HEIGHT::px;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 2em;
-                position: relative;
-            }
-
-        </style>
-		
-        <script type="text/javascript" src="./lib/soundmanager/soundmanager2-nodebug-jsmin.js"></script>        
+        ::foreach PLATFORM.HEAD_SECTIONS::
+        ::__current__::
+        ::end::              
+		     
         <script type="text/javascript" src="./lib/modernizr.js"></script>
-
     </head>
 
-    <body style="padding: 0; margin: 0; background-color: ::PLATFORM.BGCOLOR::;">
-        
-		::if linkedLibraries::::foreach (linkedLibraries)::
-		<script type="text/javascript" src="::__current__::"></script>::end::::end::
+    <body style="padding: 0; margin: 0;">
+        ::foreach PLATFORM.BODY_SECTIONS::
+        ::__current__::
+        ::end::       
 
-        <script type="text/javascript" src="./::APP.FILE::.js"></script>    
-
-        <canvas id="duell-canvas" tabindex="1" width="::PLATFORM.WIDTH::" height="::PLATFORM.HEIGHT::"> </canvas>
-        
+        <script type="text/javascript" src="./::APP.FILE::.js"></script>            
     </body>
 
 </html>

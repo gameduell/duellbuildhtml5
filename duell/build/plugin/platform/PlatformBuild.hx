@@ -3,7 +3,7 @@
  * @date 01.09.2014.
  * @company Gameduell GmbH
  */
-  package duell.build.plugin.platform;
+ package duell.build.plugin.platform;
 
  import duell.build.objects.Configuration;
  import duell.build.objects.DuellProjectXML;
@@ -15,12 +15,15 @@
  import duell.objects.Haxelib;
  import duell.helpers.TemplateHelper;
 
+ import sys.io.Process;
+
  class PlatformBuild
  {
  	public var requiredSetups = [];
 
- 	private static var isDebug : Bool = false;
-
+ 	private  var isDebug : Bool = false;
+	private  var applicationWillRunAfterBuild : Bool = false;
+	private var serverProcess : Process; 
  	public var targetDirectory : String;
  	public var duellBuildHtml5Path : String;
  	public var projectDirectory : String;
@@ -29,13 +32,17 @@
  	{
  		checkArguments();
  	}
-	public static function checkArguments():Void
+	public function checkArguments():Void
  	{
 		for (arg in Sys.args())
 		{
 			if (arg == "-debug")
 			{
 				isDebug = true;
+			}
+			if(arg == "-run")
+			{
+				applicationWillRunAfterBuild = true;
 			}		
 		}
 
@@ -59,6 +66,11 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
+
+ 	    // if(applicationWillRunAfterBuild == true)
+ 	    // {
+ 	    // 	prepareAndRunHTTPServer();
+ 	    // }
  	}
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
@@ -93,24 +105,35 @@
  	}
  	public function runApp() : Void
  	{
+		var result : Int = prepareAndRunHTTPServer();
+		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildHtml5Path+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
+		ProcessHelper.runCommand(duellBuildHtml5Path+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
+
  		//python "$HTML5_DIR"/slimerjs-0.9.1/slimerjs.py "$HTML5_DIR"/test.js --debug=true
- 	    ProcessHelper.openURL("http://localhost:8080");
- 	    //var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
-		var result : Int = ProcessHelper.runCommand(targetDirectory+"html5/web","python",["-m","SimpleHTTPServer","8080"]);
- 	    if(result == 0)/// if the server is running successfully
- 	    {
- 	    	ProcessHelper.openURL("http://127.0.0.1:8080");
- 	    	//LogHelper.error ("could not launch the application");
- 	    }
- 	    else
- 	    {
- 	    	LogHelper.info ("could not launch the application via server make sure python is installed");
- 	    	ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
- 	    }
+ 	//     ProcessHelper.openURL("http://localhost:8080");
+ 	//     //var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
+		// var result : Int = ProcessHelper.runCommand(targetDirectory+"html5/web","python",["-m","SimpleHTTPServer","8080"]);
+ 	//     if(result == 0)/// if the server is running successfully
+ 	//     {
+ 	//     	ProcessHelper.openURL("http://127.0.0.1:8080");
+ 	//     	//LogHelper.error ("could not launch the application");
+ 	//     }
+ 	//     else
+ 	//     {
+ 	//     	LogHelper.info ("could not launch the application via server make sure python is installed");
+ 	//     	ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
+ 	//     }
+ 	}
+ 	public function prepareAndRunHTTPServer() : Int
+ 	{
+ 		var args:Array<String> = [duellBuildHtml5Path+"bin/node/http-server/http-server",targetDirectory+"html5/web","-p", "3000", "-c-1"];
+ 	    serverProcess = new Process(duellBuildHtml5Path+"/bin/node/node-mac",args);
+ 	    //var result : Int = serverProcess.exitCode();
+ 	    //return result;
+ 	    return 0;
  	}
  	public function prepareHtml5Build() : Void
  	{
- 		trace(Configuration.getData());
  	    createDirectoryAndCopyTemplate();
  	}
  	public function createDirectoryAndCopyTemplate() : Void

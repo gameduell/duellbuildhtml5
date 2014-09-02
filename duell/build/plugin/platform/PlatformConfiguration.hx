@@ -9,7 +9,9 @@ typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
 WIDTH : String,
 HEIGHT : String,
-BGCOLOR : String
+BGCOLOR : String,
+HEAD_SECTIONS : Array<String>,
+BODY_SECTIONS : Array<String>
 }
 
 class PlatformConfiguration
@@ -41,8 +43,10 @@ class PlatformConfiguration
 			PLATFORM_NAME : "html5",
 			WIDTH : "800",
 			HEIGHT : "600",
-			BGCOLOR : "#FFF"//same as #FFFFFF
+			BGCOLOR : "#FFF",//same as #FFFFFF
+			HEAD_SECTIONS:[],
+			BODY_SECTIONS:[]
 	    };
 	}
-
+	
 }
