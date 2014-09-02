@@ -111,6 +111,7 @@
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
+ 		PathHelper.mkdir(targetDirectory+"html5/web");
  		var args:Array<String> = [duellBuildHtml5Path+"bin/node/http-server/http-server",targetDirectory+"html5/web","-p", "3000", "-c-1"];
  	    serverProcess = new Process(duellBuildHtml5Path+"/bin/node/node-mac",args);
  	}
