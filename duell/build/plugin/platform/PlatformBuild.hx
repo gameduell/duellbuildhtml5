@@ -109,20 +109,6 @@
 		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildHtml5Path+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
 		ProcessHelper.runCommand(duellBuildHtml5Path+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
 
- 		//python "$HTML5_DIR"/slimerjs-0.9.1/slimerjs.py "$HTML5_DIR"/test.js --debug=true
- 	//     ProcessHelper.openURL("http://localhost:8080");
- 	//     //var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
-		// var result : Int = ProcessHelper.runCommand(targetDirectory+"html5/web","python",["-m","SimpleHTTPServer","8080"]);
- 	//     if(result == 0)/// if the server is running successfully
- 	//     {
- 	//     	ProcessHelper.openURL("http://127.0.0.1:8080");
- 	//     	//LogHelper.error ("could not launch the application");
- 	//     }
- 	//     else
- 	//     {
- 	//     	LogHelper.info ("could not launch the application via server make sure python is installed");
- 	//     	ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
- 	//     }
  	}
  	public function prepareAndRunHTTPServer() : Int
  	{
@@ -152,7 +138,6 @@
 		{
 			if (define == "debug" )
 			{
-				/// not allowed
 				Configuration.getData().HAXE_COMPILE_ARGS.push("-debug");
 				continue;
 			} 
