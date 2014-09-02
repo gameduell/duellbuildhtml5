@@ -93,10 +93,19 @@
  	}
  	public function runApp() : Void
  	{
- 	    var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
- 	    if(result != 0)
+ 		//python "$HTML5_DIR"/slimerjs-0.9.1/slimerjs.py "$HTML5_DIR"/test.js --debug=true
+ 	    ProcessHelper.openURL("http://localhost:8080");
+ 	    //var result : Int = ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
+		var result : Int = ProcessHelper.runCommand(targetDirectory+"html5/web","python",["-m","SimpleHTTPServer","8080"]);
+ 	    if(result == 0)/// if the server is running successfully
  	    {
- 	    	LogHelper.error ("could not launch the application");
+ 	    	ProcessHelper.openURL("http://127.0.0.1:8080");
+ 	    	//LogHelper.error ("could not launch the application");
+ 	    }
+ 	    else
+ 	    {
+ 	    	LogHelper.info ("could not launch the application via server make sure python is installed");
+ 	    	ProcessHelper.openURL(targetDirectory+"html5/web/index.html");
  	    }
  	}
  	public function prepareHtml5Build() : Void
