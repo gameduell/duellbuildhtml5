@@ -66,11 +66,6 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
-
- 	    // if(applicationWillRunAfterBuild == true)
- 	    // {
- 	    // 	prepareAndRunHTTPServer();
- 	    // }
  	}
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
@@ -114,8 +109,6 @@
  	{
  		var args:Array<String> = [duellBuildHtml5Path+"bin/node/http-server/http-server",targetDirectory+"html5/web","-p", "3000", "-c-1"];
  	    serverProcess = new Process(duellBuildHtml5Path+"/bin/node/node-mac",args);
- 	    //var result : Int = serverProcess.exitCode();
- 	    //return result;
  	    return 0;
  	}
  	public function prepareHtml5Build() : Void
