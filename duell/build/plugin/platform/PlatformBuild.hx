@@ -19,9 +19,6 @@
 
  import haxe.io.Path;
  
- import haxe.io.BytesOutput;
- import haxe.io.Eof;
-
  class PlatformBuild
  {
  	public var requiredSetups = [];
@@ -141,7 +138,6 @@
  		{
  			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
-
  		}
  		if(runInSlimerJS == true)
  		{
@@ -149,7 +145,7 @@
 			ProcessHelper.runCommand(Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1"]),"python",["slimerjs.py","../test.js"]);
  		} 
  	}
- 	public function prepareAndRunHTTPServer(presistent : Bool = false) : Void
+ 	public function prepareAndRunHTTPServer() : Void
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
  		PathHelper.mkdir(serverTargetDirectory);
