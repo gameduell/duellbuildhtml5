@@ -4,14 +4,22 @@
  * @company Gameduell GmbH
  */
 package duell.build.plugin.platform;
-
+typedef ScriptItem = {
+	originalPath : String,
+	destination : String, 
+	applyTemplate : Bool
+}
+typedef Iterable<ScriptItem> = {
+    function iterator() : Iterator<ScriptItem>;
+}
 typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
 WIDTH : String,
 HEIGHT : String,
 BGCOLOR : String,
 HEAD_SECTIONS : Array<String>,
-BODY_SECTIONS : Array<String>
+BODY_SECTIONS : Array<String>,
+JS_INCLUDES : Array<ScriptItem>
 }
 
 class PlatformConfiguration
@@ -45,7 +53,8 @@ class PlatformConfiguration
 			HEIGHT : "600",
 			BGCOLOR : "#FFF",//same as #FFFFFF
 			HEAD_SECTIONS:[],
-			BODY_SECTIONS:[]
+			BODY_SECTIONS:[],
+			JS_INCLUDES : []
 	    };
 	}
 	

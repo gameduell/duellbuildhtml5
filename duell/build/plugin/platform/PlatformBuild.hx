@@ -83,7 +83,7 @@
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
-
+ 	    copyJSIncludesToLibFolder();
  	    if(applicationWillRunAfterBuild && runInSlimerJS) 
  	    {
  	    	prepareAndRunHTTPServer();
@@ -128,7 +128,7 @@
  		/// order here matters cause opening slimerjs is a blocker process	
  		if(runInBrowser  && !runInSlimerJS)
  		{
- 			prepareAndRunHTTPServer(runInBrowser && !runInSlimerJS);
+ 			prepareAndRunHTTPServer();
  			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
 			/// create blocking command
@@ -181,6 +181,30 @@
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D");
 			Configuration.getData().HAXE_COMPILE_ARGS.push(define);
 		}
-	} 	
+	} 
+	private function copyJSIncludesToLibFolder() : Void
+	{
+		var oldPath : String = Sys.getCwd();
+		var path : Path;
+		var jsIncludesPaths : Array<String> = [];
+		var copyDestinationPath : String = "";
+    	Sys.setCwd(duellBuildHtml5Path);
+	    
+	    for ( scriptItem in PlatformConfiguration.getData().JS_INCLUDES )
+	    {
+	    	copyDestinationPath = Path.join([projectDirectory,"html5","web",scriptItem.destination]);
+
+	    	if(scriptItem.applyTemplate == true)
+	    	{
+	    		TemplateHelper.copyTemplateFile(scriptItem.originalPath, copyDestinationPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+	    	}
+	    	else
+	    	{
+	    		TemplateHelper.copyFile(scriptItem.originalPath, copyDestinationPath);
+	    	}
+
+	    }
+    	Sys.setCwd(oldPath);
+	}	
 
  }

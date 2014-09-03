@@ -42,7 +42,20 @@ import duell.helpers.LogHelper;
 					parseStyle(element);
 				case "head-section":
 					parseHeadSection(element);
-
+				case "js-includes":
+					parseJSInclude(element);
+			}
+		}
+	}
+	public static function parseJSInclude(element : Fast) : Void
+	{
+		var path:haxe.io.Path;
+		for (script in element.nodes.script) 
+		{
+			if(script.has.path)
+			{
+				path = new haxe.io.Path(resolvePath(script.att.path));
+				PlatformConfiguration.getData().JS_INCLUDES.push({originalPath : resolvePath(script.att.path), destination : "libs/"+path.file+"."+path.ext, applyTemplate : script.has.applyTemplate ? cast script.att.applyTemplate : false});
 			}
 		}
 	}
