@@ -184,11 +184,8 @@
 	} 
 	private function copyJSIncludesToLibFolder() : Void
 	{
-		var oldPath : String = Sys.getCwd();
-		var path : Path;
 		var jsIncludesPaths : Array<String> = [];
 		var copyDestinationPath : String = "";
-    	Sys.setCwd(duellBuildHtml5Path);
 	    
 	    for ( scriptItem in PlatformConfiguration.getData().JS_INCLUDES )
 	    {
@@ -204,7 +201,6 @@
 	    	}
 
 	    }
-    	Sys.setCwd(oldPath);
 	}	
 
  }

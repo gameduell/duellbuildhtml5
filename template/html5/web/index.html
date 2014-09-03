@@ -9,17 +9,17 @@
         ::__current__::
         ::end::  
 
-        ::foreach PLATFORM.JS_INCLUDES::
-                <script type="text/javascript" src="::__current__.destination::"></script>
-        ::end::              
 		     
     </head>
 
     <body style="padding: 0; margin: 0;">
         ::foreach PLATFORM.BODY_SECTIONS::
         ::__current__::
-        ::end::       
+        ::end::
 
+        ::foreach PLATFORM.JS_INCLUDES::
+                <script type="text/javascript" src="./::__current__.destination::"></script>
+        ::end::              
         <script type="text/javascript" src="./::APP.FILE::.js"></script>            
     </body>
 

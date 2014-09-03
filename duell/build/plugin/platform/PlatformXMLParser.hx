@@ -37,36 +37,33 @@ import duell.helpers.LogHelper;
 			switch (element.name) 
 			{
 				case "win-size":
-					parseWinSize(element);
+					parseWinSizeElement(element);
 				case "style":
-					parseStyle(element);
+					parseStyleElement(element);
 				case "head-section":
 					parseHeadSection(element);
-				case "js-includes":
-					parseJSInclude(element);
+				case "js-source":
+					parseJSIncludeElement(element);
 			}
 		}
 	}
-	public static function parseJSInclude(element : Fast) : Void
+	public static function parseJSIncludeElement(element : Fast) : Void
 	{
 		var path:haxe.io.Path;
-		for (script in element.nodes.script) 
+		if(element.has.path)
 		{
-			if(script.has.path)
-			{
-				path = new haxe.io.Path(resolvePath(script.att.path));
-				PlatformConfiguration.getData().JS_INCLUDES.push({originalPath : resolvePath(script.att.path), destination : "libs/"+path.file+"."+path.ext, applyTemplate : script.has.applyTemplate ? cast script.att.applyTemplate : false});
-			}
+			path = new haxe.io.Path(resolvePath(element.att.path));
+			PlatformConfiguration.getData().JS_INCLUDES.push({originalPath : resolvePath(element.att.path), destination : "libs/"+path.file+"."+path.ext, applyTemplate : element.has.applyTemplate ? cast element.att.applyTemplate : false});
 		}
 	}
-	public static function parseStyle(element : Fast) : Void
+	public static function parseStyleElement(element : Fast) : Void
 	{
 	    if(element.has.bgColor)
 	    {
 	    	PlatformConfiguration.getData().BGCOLOR = element.att.bgColor;      
 	    }
 	}
-	public static function parseWinSize(element : Fast) : Void
+	public static function parseWinSizeElement(element : Fast) : Void
 	{
 	    if(element.has.width)
 	    {
@@ -83,7 +80,7 @@ import duell.helpers.LogHelper;
 		return DuellProjectXML.getConfig().resolvePath(string);
 	}
 
-	private static function parseHeadSection(element : Fast)
+	private static function parseHeadSection(element : Fast) : Void
 	{
 		PlatformConfiguration.getData().HEAD_SECTIONS.push(element.innerHTML);
 	}
