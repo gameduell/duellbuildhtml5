@@ -17,16 +17,24 @@
 
  import sys.io.Process;
 
+ import haxe.io.Path;
+ 
+ import haxe.io.BytesOutput;
+ import haxe.io.Eof;
+
  class PlatformBuild
  {
  	public var requiredSetups = [];
 
- 	private  var isDebug : Bool = false;
-	private  var applicationWillRunAfterBuild : Bool = false;
+ 	private var isDebug : Bool = false;
+	private var applicationWillRunAfterBuild : Bool = false;
+	private var runInSlimerJS : Bool = false;
+	private var runInBrowser : Bool = false;
 	private var serverProcess : Process; 
- 	public var targetDirectory : String;
- 	public var duellBuildHtml5Path : String;
- 	public var projectDirectory : String;
+	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
+ 	public  var targetDirectory : String;
+ 	public  var duellBuildHtml5Path : String;
+ 	public  var projectDirectory : String;
  	
  	public function new()
  	{
@@ -43,8 +51,20 @@
 			if(arg == "-run")
 			{
 				applicationWillRunAfterBuild = true;
-			}		
+			}	
+			if(arg == "-slimerjs")
+			{
+				runInSlimerJS = true;
+			}	
+			if(arg == "-browser")
+			{
+				runInBrowser = true;
+			}	
 		}
+		/// if nothing passed slimerjs is the default
+ 		if(!runInBrowser && !runInSlimerJS)
+ 			runInSlimerJS = true;
+
 
  	}
 
@@ -59,15 +79,15 @@
  	}
  	public function prepareBuild() : Void
  	{
- 	    targetDirectory = Configuration.getData().OUTPUT+"/" ;
- 	    projectDirectory = targetDirectory+"/" ;
+ 	    targetDirectory = Configuration.getData().OUTPUT ;
+ 	    projectDirectory = targetDirectory ;
  	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
 
- 	    if(applicationWillRunAfterBuild)
+ 	    if(applicationWillRunAfterBuild && runInSlimerJS) 
  	    {
  	    	prepareAndRunHTTPServer();
  	    }
@@ -96,7 +116,9 @@
  	{
 		LogHelper.info("", "" + Configuration.getData());
 		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
-		ProcessHelper.runCommand(targetDirectory+"html5/hxml/","haxe",["Build.hxml"]);
+
+		var buildPath : String  = Path.join([targetDirectory,"html5","hxml"]);
+		ProcessHelper.runCommand(buildPath,"haxe",["Build.hxml"]);
  	}
 
  	public function run() : Void
@@ -105,15 +127,36 @@
  	}
  	public function runApp() : Void
  	{
-		Sys.putEnv("SLIMERJSLAUNCHER", duellBuildHtml5Path+"bin/slimerjs-0.9.1/xulrunner/xulrunner");
-		ProcessHelper.runCommand(duellBuildHtml5Path+"bin/slimerjs-0.9.1","python",["slimerjs.py","../test.js"]);
 
+ 		/// order here matters cause opening slimerjs is a blocker process	
+ 		if(runInBrowser  && !runInSlimerJS)
+ 		{
+ 			prepareAndRunHTTPServer(runInBrowser && !runInSlimerJS);
+ 			ProcessHelper.runCommand("","sleep",["1"]);
+ 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+			/// create blocking command
+			ProcessHelper.startBlockingProcess(serverProcess);
+		}
+ 		else if(runInBrowser && runInSlimerJS)
+ 		{
+ 			ProcessHelper.runCommand("","sleep",["1"]);
+ 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+
+ 		}
+ 		if(runInSlimerJS == true)
+ 		{
+			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
+			ProcessHelper.runCommand(Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1"]),"python",["slimerjs.py","../test.js"]);
+ 		} 
  	}
- 	public function prepareAndRunHTTPServer() : Void
+ 	public function prepareAndRunHTTPServer(presistent : Bool = false) : Void
  	{
- 		PathHelper.mkdir(targetDirectory+"html5/web");
- 		var args:Array<String> = [duellBuildHtml5Path+"bin/node/http-server/http-server",targetDirectory+"html5/web","-p", "3000", "-c-1"];
- 	    serverProcess = new Process(duellBuildHtml5Path+"/bin/node/node-mac",args);
+ 		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
+ 		PathHelper.mkdir(serverTargetDirectory);
+ 		var serverDirectory : String = Path.join([duellBuildHtml5Path,"bin","node","http-server","http-server"]);
+ 		var args:Array<String> = [Path.join([duellBuildHtml5Path,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"html5","web"]),"-p", "3000", "-c-1"];
+ 	    
+ 	    serverProcess = new Process(Path.join([duellBuildHtml5Path,"bin","node","node-mac"]),args);
  	}
  	public function prepareHtml5Build() : Void
  	{
@@ -126,7 +169,7 @@
 
  	    ///copying template files 
  	    /// index.html, expressInstall.swf and swiftObject.js
- 	    TemplateHelper.recursiveCopyTemplatedFiles(duellBuildHtml5Path + "template", projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+ 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildHtml5Path, "template"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
 	{	
