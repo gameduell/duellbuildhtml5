@@ -197,7 +197,7 @@
 	    	}
 	    	else
 	    	{
-	    		TemplateHelper.copyFile(scriptItem.originalPath, copyDestinationPath);
+	    		FileHelper.copyFile(scriptItem.originalPath, copyDestinationPath);
 	    	}
 
 	    }
