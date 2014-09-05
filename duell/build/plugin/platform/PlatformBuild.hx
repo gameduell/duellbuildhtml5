@@ -191,6 +191,7 @@
 	    {
 	    	copyDestinationPath = Path.join([projectDirectory,"html5","web",scriptItem.destination]);
 
+	    	PathHelper.mkdir(Path.directory(copyDestinationPath));
 	    	if(scriptItem.applyTemplate == true)
 	    	{
 	    		TemplateHelper.copyTemplateFile(scriptItem.originalPath, copyDestinationPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
