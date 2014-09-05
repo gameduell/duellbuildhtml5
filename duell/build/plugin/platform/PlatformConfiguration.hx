@@ -9,9 +9,7 @@ typedef ScriptItem = {
 	destination : String, 
 	applyTemplate : Bool
 }
-typedef Iterable<ScriptItem> = {
-    function iterator() : Iterator<ScriptItem>;
-}
+
 typedef PlatformConfigurationData = {
 PLATFORM_NAME : String,
 WIDTH : String,
