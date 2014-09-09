@@ -8,7 +8,21 @@
         ::foreach PLATFORM.HEAD_SECTIONS::
         ::__current__::
         ::end::  
+        <script type="text/javascript">
+            document.body.ontouchstart = function(e) 
+            {
+                if (e && e.preventDefault) { e.preventDefault(); }
+                if (e && e.stopPropagation) { e.stopPropagation(); }
+                return false;
+            }
 
+            document.body.ontouchmove = function(e) 
+            {
+                if (e && e.preventDefault) { e.preventDefault(); }
+                if (e && e.stopPropagation) { e.stopPropagation(); }
+                return false;
+            }
+        </script>
 		     
     </head>
 
