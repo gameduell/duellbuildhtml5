@@ -198,7 +198,7 @@
 	    	}
 	    	else
 	    	{
-	    		FileHelper.copyFile(scriptItem.originalPath, copyDestinationPath);
+	    		FileHelper.copyIfNewer(scriptItem.originalPath, copyDestinationPath);
 	    	}
 
 	    }
