@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+        ::foreach PLATFORM.PREHEAD_SECTIONS::
+        ::__current__::
+        ::end::  
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
     <head>
 
@@ -8,21 +11,6 @@
         ::foreach PLATFORM.HEAD_SECTIONS::
         ::__current__::
         ::end::  
-        <script type="text/javascript">
-            document.body.ontouchstart = function(e) 
-            {
-                if (e && e.preventDefault) { e.preventDefault(); }
-                if (e && e.stopPropagation) { e.stopPropagation(); }
-                return false;
-            }
-
-            document.body.ontouchmove = function(e) 
-            {
-                if (e && e.preventDefault) { e.preventDefault(); }
-                if (e && e.stopPropagation) { e.stopPropagation(); }
-                return false;
-            }
-        </script>
 		     
     </head>
 

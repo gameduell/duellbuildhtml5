@@ -44,8 +44,20 @@ import duell.helpers.LogHelper;
 					parseHeadSection(element);
 				case "js-source":
 					parseJSIncludeElement(element);
+				case "prehead-section":
+					parsePreheadSectionElement(element);
+				case "body-section":
+					parseBodySectionElement(element);
 			}
 		}
+	}
+	public static function parseBodySectionElement(element : Fast) : Void
+	{
+		PlatformConfiguration.getData().BODY_SECTIONS.push(element.innerHTML);
+	}
+	public static function parsePreheadSectionElement(element : Fast) : Void
+	{
+		PlatformConfiguration.getData().PREHEAD_SECTIONS.push(element.innerHTML);
 	}
 	public static function parseJSIncludeElement(element : Fast) : Void
 	{

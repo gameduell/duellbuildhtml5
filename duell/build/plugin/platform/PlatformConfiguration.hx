@@ -17,7 +17,8 @@ HEIGHT : String,
 BGCOLOR : String,
 HEAD_SECTIONS : Array<String>,
 BODY_SECTIONS : Array<String>,
-JS_INCLUDES : Array<ScriptItem>
+JS_INCLUDES : Array<ScriptItem>,
+PREHEAD_SECTIONS : Array<String>
 }
 
 class PlatformConfiguration
@@ -52,7 +53,8 @@ class PlatformConfiguration
 			BGCOLOR : "#FFF",//same as #FFFFFF
 			HEAD_SECTIONS:[],
 			BODY_SECTIONS:[],
-			JS_INCLUDES : []
+			JS_INCLUDES : [],
+			PREHEAD_SECTIONS : []
 	    };
 	}
 	
