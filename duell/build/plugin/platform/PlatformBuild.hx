@@ -127,14 +127,12 @@
  		if(runInBrowser  && !runInSlimerJS)
  		{
  			prepareAndRunHTTPServer();
- 			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
 			/// create blocking command
 			ProcessHelper.startBlockingProcess(serverProcess);
 		}
  		else if(runInBrowser && runInSlimerJS)
  		{
- 			ProcessHelper.runCommand("","sleep",["1"]);
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
  		}
  		if(runInSlimerJS == true)
