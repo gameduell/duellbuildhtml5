@@ -15,6 +15,7 @@
  import duell.objects.Haxelib;
  import duell.helpers.TemplateHelper;
  import duell.helpers.PlatformHelper;
+ import duell.helpers.ServerHelper;
  import sys.io.Process;
 
  import haxe.io.Path;
@@ -145,38 +146,8 @@
  	public function prepareAndRunHTTPServer() : Void
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
- 		PathHelper.mkdir(serverTargetDirectory);
- 		var serverDirectory : String = Path.join([duellBuildHtml5Path,"bin","node","http-server","http-server"]);
- 		var args:Array<String> = [Path.join([duellBuildHtml5Path,"bin","node","http-server","http-server"]),Path.join([targetDirectory,"html5","web"]),"-p", "3000", "-c-1"];
- 	    var serverPrefix : String = "";
- 	     	    
- 	    switch(PlatformHelper.hostPlatform)
-		{
-			case Platform.WINDOWS : 
-				serverPrefix =  "windows";
-			case Platform.MAC : 
-				serverPrefix =  "mac";
-			case Platform.LINUX : 
-				 serverPrefix =  "linux";
-			default:                
-
-		}
-        
- 	    var archPrefix : String = "";
- 	     switch(PlatformHelper.hostArchitecture)
-	 	    {
-	 	    	case Architecture.X86 : 
-	 	    		archPrefix =  "32";
-	 	    	case Architecture.X64 : 
-	 	    		archPrefix =  "64";
-	 	    	default:                
-
-	 	    }
-
-		if(serverPrefix != "linux")
-			archPrefix = "";
-
- 	    serverProcess = new Process(Path.join([duellBuildHtml5Path,"bin","node","node-"+serverPrefix+archPrefix]),args);
+ 		
+ 		serverProcess = ServerHelper.runServer(serverTargetDirectory, duellBuildHtml5Path);
  	}
  	public function prepareHtml5Build() : Void
  	{
