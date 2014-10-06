@@ -10,6 +10,7 @@
  import duell.helpers.PathHelper;
  import duell.helpers.LogHelper;
  import duell.helpers.FileHelper;
+ import duell.helpers.TestHelper;
  import duell.helpers.ProcessHelper;
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
@@ -25,11 +26,14 @@
  {
  	public var requiredSetups = [];
 
+	public static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
+
  	private var isDebug : Bool = false;
 	private var applicationWillRunAfterBuild : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
 	private var serverProcess : Process; 
+	private var fullTestResultPath : String;
 	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
  	public  var targetDirectory : String;
  	public  var duellBuildHtml5Path : String;
@@ -78,7 +82,8 @@
  	}
  	public function prepareBuild() : Void
  	{
- 	    targetDirectory = Configuration.getData().OUTPUT ;
+ 	    targetDirectory = Configuration.getData().OUTPUT;
+		fullTestResultPath = Path.join([targetDirectory, TEST_RESULT_FILENAME]);
  	    projectDirectory = targetDirectory ;
  	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
 		
@@ -121,6 +126,12 @@
  	{
  	    runApp();/// run app in the browser
  	}
+
+	public function test()
+	{
+		testApp();
+	}
+
  	public function runApp() : Void
  	{
 
@@ -196,5 +207,11 @@
 
 	    }
 	}	
+
+	private function testApp()
+	{
+		neko.vm.Thread.create(runApp);
+		TestHelper.runListenerServer(10, 8181, fullTestResultPath);
+	}
 
  }
