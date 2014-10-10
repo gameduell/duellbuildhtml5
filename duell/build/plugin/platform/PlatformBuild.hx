@@ -17,8 +17,7 @@
  import duell.helpers.TemplateHelper;
  import duell.helpers.PlatformHelper;
  import duell.helpers.ServerHelper;
- 
- import sys.io.Process;
+ import duell.objects.DuellProcess;
 
  import haxe.io.Path;
  
@@ -26,18 +25,21 @@
  {
  	public var requiredSetups = [];
 
-	public static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
+	private static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
+	private static inline var DEFAULT_SERVER_URL = "http://localhost:3000/";
+	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 2;
 
  	private var isDebug : Bool = false;
+ 	private var isTest : Bool = false;
 	private var applicationWillRunAfterBuild : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
-	private var serverProcess : Process; 
+	private var serverProcess : DuellProcess; 
+	private var slimerProcess : DuellProcess; 
 	private var fullTestResultPath : String;
-	private var DEFAULT_SERVER_URL : String = "http://localhost:3000/";
- 	public  var targetDirectory : String;
- 	public  var duellBuildHtml5Path : String;
- 	public  var projectDirectory : String;
+ 	private var targetDirectory : String;
+ 	private var duellBuildHtml5Path : String;
+ 	private var projectDirectory : String;
  	
  	public function new()
  	{
@@ -51,24 +53,37 @@
 			{
 				isDebug = true;
 			}
-			if(arg == "-run")
+			else if(arg == "-run")
 			{
 				applicationWillRunAfterBuild = true;
 			}	
-			if(arg == "-slimerjs")
+			else if(arg == "-slimerjs")
 			{
 				runInSlimerJS = true;
 			}	
-			if(arg == "-browser")
+			else if(arg == "-browser")
 			{
 				runInBrowser = true;
 			}	
+			else if (arg == "-test")
+			{
+				isTest = true;
+				applicationWillRunAfterBuild = true;
+				Configuration.addParsingDefine("test");
+			}
 		}
 		/// if nothing passed slimerjs is the default
  		if(!runInBrowser && !runInSlimerJS)
  			runInSlimerJS = true;
 
-
+		if (isDebug)
+		{
+			Configuration.addParsingDefine("debug");
+		}
+		else
+		{
+			Configuration.addParsingDefine("release");
+		}
  	}
 
  	public function parse() : Void
@@ -83,15 +98,16 @@
  	public function prepareBuild() : Void
  	{
  	    targetDirectory = Configuration.getData().OUTPUT;
-		fullTestResultPath = Path.join([targetDirectory, TEST_RESULT_FILENAME]);
- 	    projectDirectory = targetDirectory ;
+ 	    projectDirectory = Path.join([targetDirectory, "html5"]);
+		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
  	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
- 	    prepareHtml5Build();
  	    convertParsingDefinesToCompilationDefines();
+ 	    prepareHtml5Build();
  	    copyJSIncludesToLibFolder();
- 	    if(applicationWillRunAfterBuild && runInSlimerJS) 
+
+ 	    if(applicationWillRunAfterBuild) 
  	    {
  	    	prepareAndRunHTTPServer();
  	    }
@@ -115,9 +131,6 @@
 	}
  	public function build() : Void
  	{
-		LogHelper.info("", "" + Configuration.getData());
-		LogHelper.info("", "" + Configuration.getData().LIBRARY.GRAPHICS);
-
 		var buildPath : String  = Path.join([targetDirectory,"html5","hxml"]);
 		ProcessHelper.runCommand(buildPath,"haxe",["Build.hxml"]);
  	}
@@ -134,24 +147,32 @@
 
  	public function runApp() : Void
  	{
-
  		/// order here matters cause opening slimerjs is a blocker process	
- 		if(runInBrowser  && !runInSlimerJS)
- 		{
- 			prepareAndRunHTTPServer();
- 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
-			/// create blocking command
-			ProcessHelper.startBlockingProcess(serverProcess);
-		}
- 		else if(runInBrowser && runInSlimerJS)
+ 		if(runInBrowser)
  		{
  			ProcessHelper.openURL(DEFAULT_SERVER_URL);
  		}
- 		if(runInSlimerJS == true)
+
+ 		if(runInSlimerJS)
  		{
 			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
-			ProcessHelper.runCommand(Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1"]),"python",["slimerjs.py","../test.js"]);
+			slimerProcess = new DuellProcess(
+												Path.join([duellBuildHtml5Path, "bin", "slimerjs-0.9.1"]), 
+												"python", 
+												["slimerjs.py","../test.js"], 
+												{
+													loggingPrefix : "", 
+													logOnlyIfVerbose : false, 
+													systemCommand : true,
+													timeout : 0
+												});
+			slimerProcess.blockUntilFinished();
+			serverProcess.kill();
  		} 
+ 		else if(runInBrowser)
+ 		{
+			serverProcess.blockUntilFinished();
+ 		}
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
@@ -170,7 +191,7 @@
 
  	    ///copying template files 
  	    /// index.html, expressInstall.swf and swiftObject.js
- 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildHtml5Path, "template"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+ 	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildHtml5Path, "template", "html5"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
 	{	
@@ -193,7 +214,7 @@
 	    
 	    for ( scriptItem in PlatformConfiguration.getData().JS_INCLUDES )
 	    {
-	    	copyDestinationPath = Path.join([projectDirectory,"html5","web",scriptItem.destination]);
+	    	copyDestinationPath = Path.join([projectDirectory,"web",scriptItem.destination]);
 
 	    	PathHelper.mkdir(Path.directory(copyDestinationPath));
 	    	if(scriptItem.applyTemplate == true)
@@ -210,8 +231,43 @@
 
 	private function testApp()
 	{
-		neko.vm.Thread.create(runApp);
-		TestHelper.runListenerServer(10, 8181, fullTestResultPath);
+		/// DELETE PREVIOUS TEST
+		if (sys.FileSystem.exists(fullTestResultPath))
+		{
+			sys.FileSystem.deleteFile(fullTestResultPath);
+		}
+
+		/// CREATE TARGET FOLDER
+		PathHelper.mkdir(Path.directory(fullTestResultPath));
+
+		/// RUN THE APP IN A THREAD
+		var targetTime = haxe.Timer.stamp() + DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP;
+		neko.vm.Thread.create(function()
+		{
+			Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
+
+			runApp();
+		});
+
+		/// RUN THE LISTENER
+		try
+		{
+			TestHelper.runListenerServer(60, 8181, fullTestResultPath);
+		}
+		catch (e:Dynamic)
+		{
+			serverProcess.kill();
+			if (runInSlimerJS)
+			{
+				slimerProcess.kill();
+			}
+			neko.Lib.rethrow(e);
+		}
+		serverProcess.kill();
+		if (runInSlimerJS)
+		{
+			slimerProcess.kill();
+		}
 	}
 
  }

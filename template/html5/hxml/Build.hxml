@@ -1,5 +1,3 @@
 -main ::MAIN:: ::foreach (HAXE_COMPILE_ARGS)::
 ::__current__::::end::
 -js ::OUTPUT::/html5/web/::APP.FILE::.js
--D html5
--D html

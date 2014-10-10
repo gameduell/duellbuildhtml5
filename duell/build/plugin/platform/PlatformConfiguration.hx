@@ -39,10 +39,6 @@ class PlatformConfiguration
 	{
 	    return _parsingDefines;
 	}
-	public static function addParsingDefines(str : String):Void
-	{
-	    _parsingDefines.push(str);
-	}
 	public static function initConfig() : Void
 	{
 	    _configuration = 
