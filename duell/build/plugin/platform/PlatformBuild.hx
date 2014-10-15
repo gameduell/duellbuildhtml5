@@ -116,7 +116,7 @@
 	{
 		for (haxelib in Configuration.getData().DEPENDENCIES.HAXELIBS)
 		{
-			Configuration.getData().HAXE_COMPILE_ARGS.push("-cp " + Haxelib.getHaxelib(haxelib.name, haxelib.version).getPath());
+			Configuration.getData().HAXE_COMPILE_ARGS.push("-lib " + haxelib.name + (haxelib.version != "" ? ":" + haxelib.version : ""));
 		}
 
 		for (duelllib in Configuration.getData().DEPENDENCIES.DUELLLIBS)
