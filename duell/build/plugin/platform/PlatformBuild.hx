@@ -18,6 +18,7 @@
  import duell.helpers.PlatformHelper;
  import duell.helpers.ServerHelper;
  import duell.objects.DuellProcess;
+ import duell.objects.Arguments;
 
  import haxe.io.Path;
  
@@ -47,31 +48,33 @@
  	}
 	public function checkArguments():Void
  	{
-		for (arg in Sys.args())
+		if (Arguments.isSet("-debug"))
 		{
-			if (arg == "-debug")
-			{
-				isDebug = true;
-			}
-			else if(arg == "-run")
-			{
-				applicationWillRunAfterBuild = true;
-			}	
-			else if(arg == "-slimerjs")
-			{
-				runInSlimerJS = true;
-			}	
-			else if(arg == "-browser")
-			{
-				runInBrowser = true;
-			}	
-			else if (arg == "-test")
-			{
-				isTest = true;
-				applicationWillRunAfterBuild = true;
-				Configuration.addParsingDefine("test");
-			}
+			isDebug = true;
 		}
+		
+		if(!Arguments.isSet("-norun"))
+		{
+			applicationWillRunAfterBuild = true;
+		}	
+		
+		if(Arguments.isSet("-slimerjs"))
+		{
+			runInSlimerJS = true;
+		}	
+		
+		if(Arguments.isSet("-browser"))
+		{
+			runInBrowser = true;
+		}	
+		
+		if (Arguments.isSet("-test"))
+		{
+			isTest = true;
+			applicationWillRunAfterBuild = true;
+			Configuration.addParsingDefine("test");
+		}
+
 		/// if nothing passed slimerjs is the default
  		if(!runInBrowser && !runInSlimerJS)
  			runInSlimerJS = true;
@@ -97,10 +100,7 @@
  	}
  	public function prepareBuild() : Void
  	{
- 	    targetDirectory = Configuration.getData().OUTPUT;
- 	    projectDirectory = Path.join([targetDirectory, "html5"]);
-		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
- 	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
+ 		prepareVariables();
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
@@ -112,6 +112,15 @@
  	    	prepareAndRunHTTPServer();
  	    }
  	}
+
+ 	private function prepareVariables() : Void
+ 	{
+ 	    targetDirectory = Configuration.getData().OUTPUT;
+ 	    projectDirectory = Path.join([targetDirectory, "html5"]);
+		fullTestResultPath = Path.join([Configuration.getData().OUTPUT, "test", TEST_RESULT_FILENAME]);
+ 	    duellBuildHtml5Path = DuellLib.getDuellLib("duellbuildhtml5").getPath();
+ 	}
+
  	private function convertDuellAndHaxelibsIntoHaxeCompilationFlags()
 	{
 		for (haxelib in Configuration.getData().DEPENDENCIES.HAXELIBS)
@@ -162,6 +171,21 @@
 	public function test()
 	{
 		testApp();
+	}
+
+	public function publish()
+	{
+		throw "Publishing is not yet implemented for this platform";
+	}
+
+	public function fast()
+	{
+		parseProject();
+
+		prepareVariables();
+ 	    prepareAndRunHTTPServer();
+		build();
+		runApp();
 	}
 
  	public function runApp() : Void

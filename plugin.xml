@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin>
+	<documentation>
+    Use this plugin to build for the HTML5 platform. 
+	</documentation>
+	<configuration>
+		
+	</configuration>
+
+	<arg name="-debug" type="void">
+		<documentation>
+			Use this argument if you want to build in debug.
+		</documentation>
+	</arg>
+	<arg name="-slimerjs" type="void">
+		<documentation>
+			Use this argument to make the app run on slimerjs which is a standalone tiny firefox. This has the benefit of not opening a new tab on your browser.
+		</documentation>
+	</arg>
+
+	<arg name="-browser" type="void">
+		<documentation>
+			Use this argument to make the app run on browser. The default is slimerjs.
+		</documentation>
+	</arg>
+
+
+</plugin>
+
+
