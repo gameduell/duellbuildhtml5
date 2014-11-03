@@ -25,6 +25,7 @@
  class PlatformBuild
  {
  	public var requiredSetups = [];
+	public var supportedHostPlatforms = [WINDOWS, MAC, LINUX];
 
 	private static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
 	private static inline var DEFAULT_SERVER_URL = "http://localhost:3000/";
