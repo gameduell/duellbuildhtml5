@@ -203,9 +203,20 @@
 
  		if(runInSlimerJS)
  		{
-			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin","slimerjs-0.9.1","xulrunner","xulrunner"]));
+
+ 			var slimerFolder: String;
+
+ 			if (PlatformHelper.hostPlatform == LINUX)
+ 				slimerFolder = "slimerjs_linux";
+ 			else if (PlatformHelper.hostPlatform == MAC)
+ 				slimerFolder = "slimerjs_mac";
+ 			else
+ 				slimerFolder = "slimerjs_win";
+
+
+			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
 			slimerProcess = new DuellProcess(
-												Path.join([duellBuildHtml5Path, "bin", "slimerjs-0.9.1"]), 
+												Path.join([duellBuildHtml5Path, "bin", slimerFolder]), 
 												"python", 
 												["slimerjs.py","../test.js"], 
 												{
