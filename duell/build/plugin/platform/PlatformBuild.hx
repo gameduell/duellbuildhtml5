@@ -21,6 +21,8 @@
  import duell.objects.Arguments;
 
  import haxe.io.Path;
+
+ using StringTools;
  
  class PlatformBuild
  {
@@ -207,14 +209,22 @@
  			var slimerFolder: String;
 
  			if (PlatformHelper.hostPlatform == LINUX)
+ 			{
  				slimerFolder = "slimerjs_linux";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
+ 			}
  			else if (PlatformHelper.hostPlatform == MAC)
- 				slimerFolder = "slimerjs_mac";
+ 			{
+				slimerFolder = "slimerjs_mac";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
+ 			}
  			else
- 				slimerFolder = "slimerjs_win";
+ 			{
+				slimerFolder = "slimerjs_win";
+				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner.exe"]).replace("/", "\\"));
+ 			}
 
 
-			Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
 			slimerProcess = new DuellProcess(
 												Path.join([duellBuildHtml5Path, "bin", slimerFolder]), 
 												"python", 
