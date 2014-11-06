@@ -11,7 +11,7 @@
  import duell.helpers.LogHelper;
  import duell.helpers.FileHelper;
  import duell.helpers.TestHelper;
- import duell.helpers.ProcessHelper;
+ import duell.helpers.CommandHelper;
  import duell.objects.DuellLib;
  import duell.objects.Haxelib;
  import duell.helpers.TemplateHelper;
@@ -145,17 +145,17 @@
  	{
 		var buildPath : String  = Path.join([targetDirectory,"html5","hxml"]);
 
-		var buildProcess = new DuellProcess(
-											buildPath, 
-											"haxe", 
+
+		var result = CommandHelper.runHaxe( buildPath,
 											["Build.hxml"], 
 											{
 												logOnlyIfVerbose : false, 
-												systemCommand : true
+												systemCommand : true,
+												errorMessage: "compiling the haxe code",
+												exitOnError: false
 											});
-		buildProcess.blockUntilFinished();
 
-		if (buildProcess.exitCode() != 0)
+		if (result != 0)
 		{
 			if (applicationWillRunAfterBuild)
 			{
@@ -200,7 +200,7 @@
  		/// order here matters cause opening slimerjs is a blocker process	
  		if(runInBrowser)
  		{
- 			ProcessHelper.openURL(DEFAULT_SERVER_URL);
+ 			CommandHelper.openURL(DEFAULT_SERVER_URL);
  		}
 
  		if(runInSlimerJS)
@@ -231,7 +231,8 @@
 												["slimerjs.py","../test.js"], 
 												{
 													logOnlyIfVerbose : false, 
-													systemCommand : true
+													systemCommand : true,
+													errorMessage: "Running the slimer js browser"
 												});
 			slimerProcess.blockUntilFinished();
 			serverProcess.kill();
