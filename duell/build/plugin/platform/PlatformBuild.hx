@@ -224,6 +224,14 @@
 				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner.exe"]).replace("/", "\\"));
  			}
 
+ 			if (PlatformHelper.hostPlatform != WINDOWS)
+ 			{
+	 			CommandHelper.runCommand(Path.join([duellBuildHtml5Path, "bin", slimerFolder, "xulrunner"]),
+	 									 "chmod",
+	 									 ["+x", "xulrunner"], 
+	 									 {systemCommand: true,
+	 									  errorMessage: "Setting permissions for slimerjs"});
+ 			}
 
 			slimerProcess = new DuellProcess(
 												Path.join([duellBuildHtml5Path, "bin", slimerFolder]), 
