@@ -328,7 +328,7 @@
 		/// RUN THE LISTENER
 		try
 		{
-			TestHelper.runListenerServer(60, 8181, fullTestResultPath);
+			TestHelper.runListenerServer(300, 8181, fullTestResultPath);
 		}
 		catch (e:Dynamic)
 		{
