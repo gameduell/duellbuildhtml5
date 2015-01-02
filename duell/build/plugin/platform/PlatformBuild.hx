@@ -332,17 +332,22 @@
 		}
 		catch (e:Dynamic)
 		{
-			serverProcess.kill();
+			if (serverProcess != null)
+				serverProcess.kill();
+
 			if (runInSlimerJS)
 			{
-				slimerProcess.kill();
+				if (slimerProcess != null)
+					slimerProcess.kill();
 			}
 			neko.Lib.rethrow(e);
 		}
-		serverProcess.kill();
+		if (serverProcess != null)
+			serverProcess.kill();
 		if (runInSlimerJS)
 		{
-			slimerProcess.kill();
+			if (slimerProcess != null)
+				slimerProcess.kill();
 		}
 	}
 
