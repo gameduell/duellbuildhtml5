@@ -3,29 +3,31 @@
  * @date 01.09.2014.
  * @company Gameduell GmbH
  */
- package duell.build.plugin.platform;
+package duell.build.plugin.platform;
 
- import duell.build.objects.Configuration;
- import duell.build.objects.DuellProjectXML;
- import duell.helpers.PathHelper;
- import duell.helpers.LogHelper;
- import duell.helpers.FileHelper;
- import duell.helpers.TestHelper;
- import duell.helpers.CommandHelper;
- import duell.objects.DuellLib;
- import duell.objects.Haxelib;
- import duell.helpers.TemplateHelper;
- import duell.helpers.PlatformHelper;
- import duell.helpers.ServerHelper;
- import duell.objects.DuellProcess;
- import duell.objects.Arguments;
+import duell.build.objects.Configuration;
+import duell.build.objects.DuellProjectXML;
+import duell.helpers.PathHelper;
+import duell.helpers.LogHelper;
+import duell.helpers.FileHelper;
+import duell.helpers.TestHelper;
+import duell.helpers.CommandHelper;
+import duell.objects.DuellLib;
+import duell.objects.Haxelib;
+import duell.helpers.TemplateHelper;
+import duell.helpers.PlatformHelper;
+import duell.helpers.ServerHelper;
+import duell.objects.DuellProcess;
+import duell.objects.Arguments;
 
- import haxe.io.Path;
+import haxe.io.Path;
 
- using StringTools;
- 
- class PlatformBuild
- {
+import sys.FileSystem;
+
+using StringTools;
+
+class PlatformBuild
+{
  	public var requiredSetups = [];
 	public var supportedHostPlatforms = [WINDOWS, MAC, LINUX];
 
@@ -351,4 +353,16 @@
 		}
 	}
 
- }
+	public function clean()
+	{
+		prepareVariables();
+
+		LogHelper.info('Cleaning html5 part of export folder...');
+
+		if (FileSystem.exists(targetDirectory))
+		{
+			PathHelper.removeDirectory(targetDirectory);
+		}
+	}
+
+}
