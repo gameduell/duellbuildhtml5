@@ -109,6 +109,7 @@ class PlatformBuild
 		
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
+        forceHaxeJson();
  	    prepareHtml5Build();
  	    copyJSIncludesToLibFolder();
 
@@ -143,6 +144,12 @@ class PlatformBuild
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-cp " + path);
 		}
 	}
+
+	private function forceHaxeJson(): Void
+	{
+		Configuration.getData().HAXE_COMPILE_ARGS.push("-D haxeJSON");
+	}
+
  	public function build() : Void
  	{
 		var buildPath : String  = Path.join([targetDirectory,"html5","hxml"]);
