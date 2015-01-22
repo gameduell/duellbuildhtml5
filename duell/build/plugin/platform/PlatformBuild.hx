@@ -110,6 +110,7 @@ class PlatformBuild
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
         forceHaxeJson();
+		forceDeprecationWarnings();
  	    prepareHtml5Build();
  	    copyJSIncludesToLibFolder();
 
@@ -148,6 +149,11 @@ class PlatformBuild
 	private function forceHaxeJson(): Void
 	{
 		Configuration.getData().HAXE_COMPILE_ARGS.push("-D haxeJSON");
+	}
+
+	private function forceDeprecationWarnings(): Void
+	{
+		Configuration.getData().HAXE_COMPILE_ARGS.push("-D deprecation-warnings");
 	}
 
  	public function build() : Void
