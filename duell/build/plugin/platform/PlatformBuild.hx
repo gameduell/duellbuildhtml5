@@ -225,26 +225,26 @@ class PlatformBuild
  		{
 
  			var slimerFolder: String;
+ 			var xulrunnerFolder: String;
 
  			if (PlatformHelper.hostPlatform == LINUX)
  			{
  				slimerFolder = "slimerjs_linux";
-				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
  			}
  			else if (PlatformHelper.hostPlatform == MAC)
  			{
 				slimerFolder = "slimerjs_mac";
-				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner"]));
  			}
  			else
  			{
 				slimerFolder = "slimerjs_win";
-				Sys.putEnv("SLIMERJSLAUNCHER", Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner","xulrunner.exe"]).replace("/", "\\"));
  			}
+
+			xulrunnerFolder = Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner"]);
 
  			if (PlatformHelper.hostPlatform != WINDOWS)
  			{
-	 			CommandHelper.runCommand(Path.join([duellBuildHtml5Path, "bin", slimerFolder, "xulrunner"]),
+	 			CommandHelper.runCommand(xulrunnerFolder,
 	 									 "chmod",
 	 									 ["+x", "xulrunner"], 
 	 									 {systemCommand: true,
@@ -252,12 +252,15 @@ class PlatformBuild
  			}
 
 			slimerProcess = new DuellProcess(
-												Path.join([duellBuildHtml5Path, "bin", slimerFolder]), 
-												"python", 
-												["slimerjs.py","../test.js"], 
+												xulrunnerFolder, 
+												"xulrunner", 
+												["-app", 
+												 Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]), 
+												 "-no-remote", 
+												 Path.join([duellBuildHtml5Path, "bin", "test.js"])], 
 												{
-													logOnlyIfVerbose : false, 
-													systemCommand : true,
+													logOnlyIfVerbose : true, 
+													systemCommand : false,
 													errorMessage: "Running the slimer js browser"
 												});
 			slimerProcess.blockUntilFinished();
@@ -361,11 +364,15 @@ class PlatformBuild
 			neko.Lib.rethrow(e);
 		}
 		if (serverProcess != null)
+		{
 			serverProcess.kill();
+		}
 		if (runInSlimerJS)
 		{
 			if (slimerProcess != null)
+			{
 				slimerProcess.kill();
+			}
 		}
 	}
 
