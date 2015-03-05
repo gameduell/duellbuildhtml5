@@ -4,9 +4,25 @@
     Use this plugin to build for the HTML5 platform. 
 	</documentation>
 	<configuration>
-		
+		<elem name="win-size">
+			Use this to specifie the canvas size in the application html page. E.g.: &lt;win-size width="1024" height="768" /&gt;.
+		</elem>
+		<elem name="style">
+			Use this to add custom style to the application. E.g.: &lt;style bgColor="#badda55" /&gt;.
+		</elem>
+		<elem name="head-section">
+			Use this to add custom data to the application html header. E.g.: &lt;header-section&gt; &lt;meta charset="UTF-8"&gt; &lt;/header-section&gt;. It supports multiple tags.
+		</elem>
+		<elem name="js-source">
+			Use this to include external javascript code.E.g.: &lt;js-source path="libs/mylib.js" applyTemplate="true|false" renamePackage="oldPackageName->newPackageName"/&gt;. the applyTemplate and renamePackages attributes are optional.
+		</elem>
+		<elem name="prehead-section">
+			Use this to add custom data before the head tag in the application html page. E.g.: &lt;preheader-section&gt; &lt;doctype html&gt; &lt;/preheader-section&gt;. It supports multiple tags.
+		</elem>
+		<elem name="body-section">
+			Use this to add custom data inside the body tag in the application html page. E.g.: &lt;body-section&gt; &lt;p&gt;lorem ipsum&lt;/p&gt; &lt;/body-section&gt;. It supports multiple tags.
+		</elem>
 	</configuration>
-
 	<arg name="-debug" type="void">
 		<documentation>
 			Use this argument if you want to build in debug.
@@ -17,14 +33,11 @@
 			Use this argument to make the app run on slimerjs which is a standalone tiny firefox. This has the benefit of not opening a new tab on your browser.
 		</documentation>
 	</arg>
-
 	<arg name="-browser" type="void">
 		<documentation>
 			Use this argument to make the app run on browser. The default is slimerjs.
 		</documentation>
 	</arg>
-
-
 </plugin>
 
 
