@@ -43,7 +43,7 @@ import duell.helpers.LogHelper;
 				case "head-section":
 					parseHeadSection(element);
 				case "js-source":
-					parseJSIncludeElement(element);
+					parseJSSourceElement(element);
 				case "prehead-section":
 					parsePreheadSectionElement(element);
 				case "body-section":
@@ -59,13 +59,29 @@ import duell.helpers.LogHelper;
 	{
 		PlatformConfiguration.getData().PREHEAD_SECTIONS.push(element.innerHTML);
 	}
-	public static function parseJSIncludeElement(element : Fast) : Void
+	public static function parseJSSourceElement(element : Fast) : Void
 	{
 		var path:haxe.io.Path;
 		if(element.has.path)
 		{
 			path = new haxe.io.Path(resolvePath(element.att.path));
-			PlatformConfiguration.getData().JS_INCLUDES.push({originalPath : resolvePath(element.att.path), destination : "libs/"+path.file+"."+path.ext, applyTemplate : element.has.applyTemplate ? cast element.att.applyTemplate : false});
+
+			var oldPackage = null;
+			var newPackage = null;
+			if (element.has.renamePackage)
+			{
+				var packages = element.att.renamePackage.split("->");
+				oldPackage = packages[0];
+				newPackage = packages[1];
+			}
+
+			PlatformConfiguration.getData().JS_SOURCES.push({
+				originalPath : resolvePath(element.att.path), 
+				destination : "libs/"+path.file+"."+path.ext, 
+				oldPackage: oldPackage, 
+				newPackage: newPackage, 
+				applyTemplate : element.has.applyTemplate ? cast element.att.applyTemplate : false
+			});
 		}
 	}
 	public static function parseStyleElement(element : Fast) : Void

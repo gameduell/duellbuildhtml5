@@ -7,7 +7,9 @@ package duell.build.plugin.platform;
 typedef ScriptItem = {
 	originalPath : String,
 	destination : String, 
-	applyTemplate : Bool
+	applyTemplate : Bool,
+	oldPackage: String,
+	newPackage: String
 }
 
 typedef PlatformConfigurationData = {
@@ -17,7 +19,7 @@ HEIGHT : String,
 BGCOLOR : String,
 HEAD_SECTIONS : Array<String>,
 BODY_SECTIONS : Array<String>,
-JS_INCLUDES : Array<ScriptItem>,
+JS_SOURCES : Array<ScriptItem>,
 PREHEAD_SECTIONS : Array<String>
 }
 
@@ -49,7 +51,7 @@ class PlatformConfiguration
 			BGCOLOR : "#FFF",//same as #FFFFFF
 			HEAD_SECTIONS:[],
 			BODY_SECTIONS:[],
-			JS_INCLUDES : [],
+			JS_SOURCES : [],
 			PREHEAD_SECTIONS : []
 	    };
 	}

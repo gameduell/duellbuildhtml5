@@ -23,6 +23,7 @@ import duell.objects.Arguments;
 import haxe.io.Path;
 
 import sys.FileSystem;
+import sys.io.File;
 
 using StringTools;
 
@@ -313,20 +314,45 @@ class PlatformBuild
 		var jsIncludesPaths : Array<String> = [];
 		var copyDestinationPath : String = "";
 	    
-	    for ( scriptItem in PlatformConfiguration.getData().JS_INCLUDES )
+	    for ( scriptItem in PlatformConfiguration.getData().JS_SOURCES )
 	    {
 	    	copyDestinationPath = Path.join([projectDirectory,"web",scriptItem.destination]);
 
-	    	PathHelper.mkdir(Path.directory(copyDestinationPath));
+	    	if (FileSystem.exists(copyDestinationPath))
+	    	{
+	    		FileSystem.deleteFile(copyDestinationPath);
+	    	}
+
+	    	var destinationFileOutput = File.write(copyDestinationPath);
+
+	    	if (scriptItem.oldPackage != null && scriptItem.newPackage != null)
+	    	{
+	    		var prepend = File.getContent(Path.join([duellBuildHtml5Path, "template", "jsimport", "preimport.js"]));
+	    		destinationFileOutput.writeString(prepend);
+	    	}
+
 	    	if(scriptItem.applyTemplate == true)
 	    	{
-	    		TemplateHelper.copyTemplateFile(scriptItem.originalPath, copyDestinationPath, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+				var fileContents:String = File.getContent(scriptItem.originalPath);
+				var template:Template = new Template(fileContents);
+				var result:String = template.execute(Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
+				destinationFileOutput.writeString(result);
 	    	}
 	    	else
 	    	{
-	    		FileHelper.copyIfNewer(scriptItem.originalPath, copyDestinationPath);
+				var fileContents:String = File.getContent(scriptItem.originalPath);
+				destinationFileOutput.writeString(fileContents);
 	    	}
 
+	    	if (scriptItem.oldPackage != null && scriptItem.newPackage != null)
+	    	{
+	    		var prepend = File.getContent(Path.join([duellBuildHtml5Path, "template", "jsimport", "postimport.js"]));
+				var template:Template = new Template(prepend);
+				var result:String = template.execute({NEW_PACKAGE: scriptItem.newPackage, OLD_PACKAGE: scriptItem.oldPackage}, Configuration.getData().TEMPLATE_FUNCTIONS);
+	    		destinationFileOutput.writeString(result);
+	    	}
+
+	    	destinationFileOutput.close();
 	    }
 	}	
 
