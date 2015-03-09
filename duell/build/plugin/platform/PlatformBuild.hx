@@ -313,7 +313,14 @@ class PlatformBuild
 	{
 		var jsIncludesPaths : Array<String> = [];
 		var copyDestinationPath : String = "";
-	    
+
+        var libsDir: String = Path.join([projectDirectory,"web","libs"]);
+
+        if (!FileSystem.exists(libsDir))
+        {
+            FileSystem.createDirectory(libsDir);
+        }
+
 	    for ( scriptItem in PlatformConfiguration.getData().JS_SOURCES )
 	    {
 	    	copyDestinationPath = Path.join([projectDirectory,"web",scriptItem.destination]);
