@@ -5,7 +5,7 @@
 	</documentation>
 	<configuration>
 		<elem name="win-size">
-			Use this to specifie the canvas size in the application html page. E.g.: &lt;win-size width="1024" height="768" /&gt;.
+			Use this to specifie the canvas dimension(width x height) in the application html page. E.g.: &lt;win-size width="1024" height="768" /&gt;.
 		</elem>
 		<elem name="style">
 			Use this to add custom style to the application. E.g.: &lt;style bgColor="#badda55" /&gt;.
