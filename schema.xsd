@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:d="duell"
+           targetNamespace="duell"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../duell/common_schema.xsd" />
+
+    <xs:complexType name="html5">
+        <xs:all>
+            <xs:element name="win-size" minOccurs="0" type="d:WidthHeight"/>
+        </xs:all>
+    </xs:complexType>
+
+</xs:schema>
