@@ -4,7 +4,7 @@
            targetNamespace="duell"
            elementFormDefault="qualified">
 
-    <xs:include schemaLocation="../duell/common_schema.xsd" />
+    <xs:include schemaLocation="../duell/schema/common_schema.xsd" />
 
     <xs:complexType name="html5">
         <xs:all>
