@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:d="duell"
+           targetNamespace="duell"
+           elementFormDefault="qualified">
+
+    <xs:include schemaLocation="../duell/schema/common_schema.xsd" />
+
+    <xs:complexType name="html5">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="win-size" type="d:WidthHeight"/>
+            <xs:element name="js-source" type="d:Path"/>
+            <xs:element name="style" type="d:BgColor"/>
+
+            <xs:element name="head-section" type="d:InnerContent"/>
+            <xs:element name="prehead-section" type="d:InnerContent"/>
+            <xs:element name="body-section" type="d:InnerContent"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="BgColor">
+        <xs:complexContent>
+            <xs:extension base="d:Conditional">
+                <xs:attribute name="bgColor" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+</xs:schema>
