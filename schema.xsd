@@ -21,7 +21,7 @@
     <xs:complexType name="BgColor">
         <xs:complexContent>
             <xs:extension base="d:Conditional">
-                <xs:attribute name="bgColor" type="d:HexColor" use="optional"/>
+                <xs:attribute name="bgColor" type="d:HexColor" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
