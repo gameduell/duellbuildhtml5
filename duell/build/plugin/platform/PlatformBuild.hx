@@ -419,9 +419,9 @@ class PlatformBuild
 
 		LogHelper.info('Cleaning html5 part of export folder...');
 
-		if (FileSystem.exists(targetDirectory))
+		if (FileSystem.exists(projectDirectory))
 		{
-			PathHelper.removeDirectory(targetDirectory);
+			PathHelper.removeDirectory(projectDirectory);
 		}
 	}
 
