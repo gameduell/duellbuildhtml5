@@ -11,9 +11,9 @@ Use this plugin to build for the HTML5 platform.
 	Use this argument if you want to build in debug.
 
 ## Project Configuration Documentation:
-### "&&lt;style&gt;"
+### "&lt;style&gt;"
  	Use this to add custom style to the application. E.g.: <style bgColor="#badda55" />.
-### "&&lt;head-section&gt;"
+### "&lt;head-section&gt;"
 	Use this to add custom data to the application html header. E.g.: <header-sectionrt; <meta charset="UTF-8"> </header-section>. It supports multiple tags.
 ### "&lt;body-section&gt;" 
  	Use this to add custom data inside the body tag in the application html page. E.g.: <body-section> <p>lorem ipsum</p> </body-sectionrt>. It supports multiple tags.
