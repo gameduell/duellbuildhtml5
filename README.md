@@ -4,7 +4,7 @@ Use this plugin to build for the HTML5 platform.
 ## Usage:
 `$ duell build html5 -browser -debug`
 ## Arguments:
-* `-browser` &ndash; fixes wrong brew commands, for example `brew docto/brew doctor`
+* `-browser` &ndash; runs the app in your default browser.
 * `-slimerjs` &ndash; Use this argument to make the app run on slimerjs which is a standalone tiny firefox. This has the benefit of not opening a new tab on your browser.
 * `-debug` &ndash; Use this argument if you want to build in debug.
 
