@@ -62,13 +62,13 @@ class PlatformBuild
 	private var applicationWillRunAfterBuild : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
-	private var serverProcess : DuellProcess; 
-	private var slimerProcess : DuellProcess; 
+	private var serverProcess : DuellProcess;
+	private var slimerProcess : DuellProcess;
 	private var fullTestResultPath : String;
  	private var targetDirectory : String;
  	private var duellBuildHtml5Path : String;
  	private var projectDirectory : String;
- 	
+
  	public function new()
  	{
  		checkArguments();
@@ -79,22 +79,22 @@ class PlatformBuild
 		{
 			isDebug = true;
 		}
-		
+
 		if(!Arguments.isSet("-norun"))
 		{
 			applicationWillRunAfterBuild = true;
-		}	
-		
+		}
+
 		if(Arguments.isSet("-slimerjs"))
 		{
 			runInSlimerJS = true;
-		}	
-		
+		}
+
 		if(Arguments.isSet("-browser"))
 		{
 			runInBrowser = true;
-		}	
-		
+		}
+
 		if (Arguments.isSet("-test"))
 		{
 			isTest = true;
@@ -128,7 +128,7 @@ class PlatformBuild
  	public function prepareBuild() : Void
  	{
  		prepareVariables();
-		
+
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
         forceHaxeJson();
@@ -136,7 +136,7 @@ class PlatformBuild
  	    prepareHtml5Build();
  	    copyJSIncludesToLibFolder();
 
- 	    if(applicationWillRunAfterBuild) 
+ 	    if(applicationWillRunAfterBuild)
  	    {
  	    	prepareAndRunHTTPServer();
  	    }
@@ -187,9 +187,9 @@ class PlatformBuild
 
 
 		var result = CommandHelper.runHaxe( buildPath,
-											["Build.hxml"], 
+											["Build.hxml"],
 											{
-												logOnlyIfVerbose : false, 
+												logOnlyIfVerbose : false,
 												systemCommand : true,
 												errorMessage: "compiling the haxe code",
 												exitOnError: false
@@ -202,7 +202,7 @@ class PlatformBuild
 				serverProcess.kill();
 			}
 
-			LogHelper.error("Haxe Compilation Failed");
+			throw "Haxe Compilation Failed";
 		}
  	}
 
@@ -226,7 +226,7 @@ class PlatformBuild
 		prepareVariables();
  	    prepareAndRunHTTPServer();
 		build();
-		
+
 		if (Arguments.isSet("-test"))
 			testApp();
 		else
@@ -235,7 +235,7 @@ class PlatformBuild
 
  	public function runApp() : Void
  	{
- 		/// order here matters cause opening slimerjs is a blocker process	
+ 		/// order here matters cause opening slimerjs is a blocker process
  		if(runInBrowser)
  		{
  			CommandHelper.openURL(DEFAULT_SERVER_URL);
@@ -270,26 +270,26 @@ class PlatformBuild
  			{
 	 			CommandHelper.runCommand(xulrunnerFolder,
 	 									 "chmod",
-	 									 ["+x", "xulrunner"], 
+	 									 ["+x", "xulrunner"],
 	 									 {systemCommand: true,
 	 									  errorMessage: "Setting permissions for slimerjs"});
  			}
 
 			slimerProcess = new DuellProcess(
-												xulrunnerFolder, 
-												xulrunnerCommand, 
-												["-app", 
-												 Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]), 
-												 "-no-remote", 
-												 Path.join([duellBuildHtml5Path, "bin", "test.js"])], 
+												xulrunnerFolder,
+												xulrunnerCommand,
+												["-app",
+												 Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]),
+												 "-no-remote",
+												 Path.join([duellBuildHtml5Path, "bin", "test.js"])],
 												{
-													logOnlyIfVerbose : true, 
+													logOnlyIfVerbose : true,
 													systemCommand : false,
 													errorMessage: "Running the slimer js browser"
 												});
 			slimerProcess.blockUntilFinished();
 			serverProcess.kill();
- 		} 
+ 		}
  		else if(runInBrowser)
  		{
 			serverProcess.blockUntilFinished();
@@ -298,7 +298,7 @@ class PlatformBuild
  	public function prepareAndRunHTTPServer() : Void
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
- 		
+
  		serverProcess = ServerHelper.runServer(serverTargetDirectory, duellBuildHtml5Path);
  	}
  	public function prepareHtml5Build() : Void
@@ -310,12 +310,12 @@ class PlatformBuild
  		/// Create directories
  		PathHelper.mkdir(targetDirectory);
 
- 	    ///copying template files 
+ 	    ///copying template files
  	    /// index.html, expressInstall.swf and swiftObject.js
  	    TemplateHelper.recursiveCopyTemplatedFiles(Path.join([duellBuildHtml5Path, "template", "html5"]), projectDirectory, Configuration.getData(), Configuration.getData().TEMPLATE_FUNCTIONS);
  	}
 	private function convertParsingDefinesToCompilationDefines()
-	{	
+	{
 
 		for (define in DuellProjectXML.getConfig().parsingConditions)
 		{
@@ -323,11 +323,11 @@ class PlatformBuild
 			{
 				Configuration.getData().HAXE_COMPILE_ARGS.push("-debug");
 				continue;
-			} 
+			}
 
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-D " + define);
 		}
-	} 
+	}
 	private function copyJSIncludesToLibFolder() : Void
 	{
 		var jsIncludesPaths : Array<String> = [];
@@ -380,7 +380,7 @@ class PlatformBuild
 
 	    	destinationFileOutput.close();
 	    }
-	}	
+	}
 
 	private function testApp()
 	{
@@ -444,4 +444,12 @@ class PlatformBuild
 		}
 	}
 
+    public function handleError()
+    {
+        if (serverProcess != null)
+            serverProcess.kill();
+
+        if (slimerProcess != null)
+            slimerProcess.kill();
+    }
 }
