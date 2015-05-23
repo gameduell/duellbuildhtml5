@@ -266,6 +266,9 @@ class PlatformBuild
 
 			xulrunnerFolder = Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner"]);
 
+            var appPath = Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]);
+            var scriptPath = Path.join([duellBuildHtml5Path, "bin", "test.js"]);
+
  			if (PlatformHelper.hostPlatform != WINDOWS)
  			{
 	 			CommandHelper.runCommand(xulrunnerFolder,
@@ -274,14 +277,21 @@ class PlatformBuild
 	 									 {systemCommand: true,
 	 									  errorMessage: "Setting permissions for slimerjs"});
  			}
+            else
+            {
+                xulrunnerFolder = xulrunnerFolder.split("/").join("\\");
+                xulrunnerCommand = xulrunnerCommand.split("/").join("\\");
+                appPath = appPath.split("/").join("\\");
+                scriptPath = scriptPath.split("/").join("\\");
+            }
 
 			slimerProcess = new DuellProcess(
 												xulrunnerFolder,
 												xulrunnerCommand,
 												["-app",
-												 Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]),
+												 appPath,
 												 "-no-remote",
-												 Path.join([duellBuildHtml5Path, "bin", "test.js"])],
+												 scriptPath],
 												{
 													logOnlyIfVerbose : true,
 													systemCommand : false,
