@@ -415,6 +415,10 @@ class PlatformBuild
 		/// RUN THE LISTENER
 		try
 		{
+			// TODO: Find a better/central place for the hardcoded fallback port 8181 ?
+			var testPort:Int = untyped Configuration.getData().TEST_PORT == null ?
+				8181 : Configuration.getData().TEST_PORT;
+
 			TestHelper.runListenerServer(300, 8181, fullTestResultPath);
 		}
 		catch (e:Dynamic)
