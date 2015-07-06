@@ -419,7 +419,7 @@ class PlatformBuild
 			var testPort:Int = untyped Configuration.getData().TEST_PORT == null ?
 				8181 : Configuration.getData().TEST_PORT;
 
-			TestHelper.runListenerServer(300, 8181, fullTestResultPath);
+			TestHelper.runListenerServer(300, testPort, fullTestResultPath);
 		}
 		catch (e:Dynamic)
 		{
