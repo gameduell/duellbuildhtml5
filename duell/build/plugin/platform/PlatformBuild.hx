@@ -415,7 +415,16 @@ class PlatformBuild
 		/// RUN THE LISTENER
 		try
 		{
-			TestHelper.runListenerServer(300, 8181, fullTestResultPath);
+			/**
+            * TODO: Find a better/central place for the hardcoded fallback port 8181
+            *       which is intended fall back on if the duell-tool's configuration
+            *       does not provide the TEST_PORT property (backward-compatibility).
+            *       Remove eventually...
+            **/
+			var testPort:Int = untyped Configuration.getData().TEST_PORT == null ?
+				8181 : Configuration.getData().TEST_PORT;
+
+			TestHelper.runListenerServer(300, testPort, fullTestResultPath);
 		}
 		catch (e:Dynamic)
 		{
