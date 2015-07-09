@@ -267,7 +267,7 @@ class PlatformBuild
 			xulrunnerFolder = Path.join([duellBuildHtml5Path,"bin",slimerFolder,"xulrunner"]);
 
             var appPath = Path.join([duellBuildHtml5Path, "bin", slimerFolder, "application.ini"]);
-            var scriptPath = Path.join([duellBuildHtml5Path, "bin", "test.js"]);
+            var scriptPath = Path.join([duellBuildHtml5Path, "bin", "application.js"]);
 
  			if (PlatformHelper.hostPlatform != WINDOWS)
  			{
@@ -291,7 +291,7 @@ class PlatformBuild
 												["-app",
 												 appPath,
 												 "-no-remote",
-												 scriptPath],
+												 scriptPath, PlatformConfiguration.getData().WIDTH, PlatformConfiguration.getData().HEIGHT],
 												{
 													logOnlyIfVerbose : true,
 													systemCommand : false,
