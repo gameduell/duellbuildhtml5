@@ -37,7 +37,6 @@ import duell.objects.DuellLib;
 import duell.objects.Haxelib;
 import duell.helpers.TemplateHelper;
 import duell.helpers.PlatformHelper;
-import duell.helpers.ServerHelper;
 import duell.helpers.ThreadHelper;
 import duell.objects.DuellProcess;
 import duell.objects.Arguments;
