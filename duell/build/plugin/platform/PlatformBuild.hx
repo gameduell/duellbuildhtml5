@@ -38,8 +38,10 @@ import duell.objects.Haxelib;
 import duell.helpers.TemplateHelper;
 import duell.helpers.PlatformHelper;
 import duell.helpers.ServerHelper;
+import duell.helpers.ThreadHelper;
 import duell.objects.DuellProcess;
 import duell.objects.Arguments;
+import duell.objects.Server;
 
 import haxe.io.Path;
 
@@ -62,7 +64,7 @@ class PlatformBuild
 	private var applicationWillRunAfterBuild : Bool = false;
 	private var runInSlimerJS : Bool = false;
 	private var runInBrowser : Bool = false;
-	private var serverProcess : DuellProcess;
+	private var server : Server;
 	private var slimerProcess : DuellProcess;
 	private var fullTestResultPath : String;
  	private var targetDirectory : String;
@@ -199,7 +201,7 @@ class PlatformBuild
 		{
 			if (applicationWillRunAfterBuild)
 			{
-				serverProcess.kill();
+				server.shutdown();
 			}
 
 			throw "Haxe Compilation Failed";
@@ -298,18 +300,19 @@ class PlatformBuild
 													errorMessage: "Running the slimer js browser"
 												});
 			slimerProcess.blockUntilFinished();
-			serverProcess.kill();
+			server.shutdown();
  		}
  		else if(runInBrowser)
  		{
-			serverProcess.blockUntilFinished();
+            server.waitUntilFinished();
  		}
  	}
  	public function prepareAndRunHTTPServer() : Void
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
 
- 		serverProcess = ServerHelper.runServer(serverTargetDirectory, duellBuildHtml5Path);
+ 		server = new Server(serverTargetDirectory);
+        server.start();
  	}
  	public function prepareHtml5Build() : Void
  	{
@@ -404,8 +407,9 @@ class PlatformBuild
 		PathHelper.mkdir(Path.directory(fullTestResultPath));
 
 		/// RUN THE APP IN A THREAD
+
 		var targetTime = haxe.Timer.stamp() + DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP;
-		neko.vm.Thread.create(function()
+		ThreadHelper.runInAThread(function()
 		{
 			Sys.sleep(DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP);
 
@@ -428,19 +432,19 @@ class PlatformBuild
 		}
 		catch (e:Dynamic)
 		{
-			if (serverProcess != null)
-				serverProcess.kill();
+			if (server != null)
+				server.shutdown();
 
 			if (runInSlimerJS)
 			{
 				if (slimerProcess != null)
 					slimerProcess.kill();
 			}
-			neko.Lib.rethrow(e);
+			throw e;
 		}
-		if (serverProcess != null)
+		if (server != null)
 		{
-			serverProcess.kill();
+			server.shutdown();
 		}
 		if (runInSlimerJS)
 		{
@@ -465,8 +469,8 @@ class PlatformBuild
 
     public function handleError()
     {
-        if (serverProcess != null)
-            serverProcess.kill();
+        if (server != null)
+            server.shutdown();
 
         if (slimerProcess != null)
             slimerProcess.kill();
