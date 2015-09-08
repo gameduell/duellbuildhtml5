@@ -310,7 +310,7 @@ class PlatformBuild
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
 
- 		server = new Server(serverTargetDirectory);
+ 		server = new Server(serverTargetDirectory, -1, 3000);
         server.start();
  	}
  	public function prepareHtml5Build() : Void
