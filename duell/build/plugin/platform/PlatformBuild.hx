@@ -219,7 +219,6 @@ class PlatformBuild
 
 	public function publish()
 	{
-		throw "Publishing is not yet implemented for this platform";
 	}
 
 	public function fast()
