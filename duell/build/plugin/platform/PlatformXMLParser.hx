@@ -101,7 +101,7 @@ import duell.helpers.LogHelper;
 				destination : "libs/"+path.file+"."+path.ext, 
 				oldPackage: oldPackage, 
 				newPackage: newPackage, 
-				applyTemplate : element.has.applyTemplate ? cast element.att.applyTemplate : false
+				applyTemplate : element.has.applyTemplate ? element.att.applyTemplate == "true" : false
 			});
 		}
 	}

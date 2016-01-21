@@ -128,6 +128,11 @@ class PlatformBuild
  	}
  	public function prepareBuild() : Void
  	{
+		if (isDebug)
+		{
+			Configuration.getData().PLATFORM.DEBUG = true;
+		}
+
  		prepareVariables();
 
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
