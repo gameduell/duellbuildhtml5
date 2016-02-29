@@ -137,6 +137,7 @@ class PlatformBuild
 
 		convertDuellAndHaxelibsIntoHaxeCompilationFlags();
  	    convertParsingDefinesToCompilationDefines();
+        forceSourceMaps();
         forceHaxeJson();
 		forceDeprecationWarnings();
  	    prepareHtml5Build();
@@ -176,6 +177,11 @@ class PlatformBuild
 			Configuration.getData().HAXE_COMPILE_ARGS.push("-cp " + path);
 		}
 	}
+
+    private function forceSourceMaps(): Void
+    {
+        Configuration.getData().HAXE_COMPILE_ARGS.push("-D source-map-content");
+    }
 
 	private function forceHaxeJson(): Void
 	{
