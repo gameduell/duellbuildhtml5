@@ -388,8 +388,8 @@ class PlatformBuild
 	    	}
 	    	else
 	    	{
-				var fileContents:String = File.getContent(scriptItem.originalPath);
-				destinationFileOutput.writeString(fileContents);
+				destinationFileOutput.close();
+				File.copy(scriptItem.originalPath, copyDestinationPath);
 	    	}
 
 	    	if (scriptItem.oldPackage != null && scriptItem.newPackage != null)
