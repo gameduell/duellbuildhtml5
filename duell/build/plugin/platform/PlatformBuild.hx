@@ -55,7 +55,7 @@ class PlatformBuild
 	public var supportedHostPlatforms = [WINDOWS, MAC, LINUX];
 
 	private static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
-	private static inline var DEFAULT_SERVER_URL = "http://localhost:3000/";
+	private static inline var DEFAULT_SERVER_URL = "http://localhost:3001/";
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 2;
 
  	private var isDebug : Bool = false;
@@ -163,7 +163,7 @@ class PlatformBuild
 		{
             var version = haxelib.version;
             if (version.startsWith("ssh") || version.startsWith("http"))
-                version = "git";
+                version = "dev";
             Configuration.getData().HAXE_COMPILE_ARGS.push("-lib " + haxelib.name + (version != "" ? ":" + version : ""));
         }
 
@@ -320,7 +320,7 @@ class PlatformBuild
  	{
  		var serverTargetDirectory : String  = Path.join([targetDirectory,"html5","web"]);
 
- 		server = new Server(serverTargetDirectory, -1, 3000);
+ 		server = new Server(serverTargetDirectory, -1, 3001);
         server.start();
  	}
  	public function prepareHtml5Build() : Void
