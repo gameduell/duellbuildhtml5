@@ -55,7 +55,7 @@ class PlatformBuild
 	public var supportedHostPlatforms = [WINDOWS, MAC, LINUX];
 
 	private static inline var TEST_RESULT_FILENAME = "test_result_html5.xml";
-	private static inline var DEFAULT_SERVER_URL = "http://localhost:3001/";
+	private static inline var DEFAULT_SERVER_URL = "http://localhost:3000/";
 	private static inline var DELAY_BETWEEN_PYTHON_LISTENER_AND_RUNNING_THE_APP = 2;
 
  	private var isDebug : Bool = false;
