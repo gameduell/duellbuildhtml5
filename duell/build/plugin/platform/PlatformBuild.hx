@@ -240,7 +240,7 @@ class PlatformBuild
 
 		if (Arguments.isSet("-test"))
 			testApp();
-		else
+		else if (!Arguments.isSet("-norun"))
 			runApp();
 	}
 
