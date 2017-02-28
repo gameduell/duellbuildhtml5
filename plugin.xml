@@ -38,6 +38,11 @@
 			Use this argument to make the app run on browser. The default is slimerjs.
 		</documentation>
 	</arg>
+	<arg name="-jsexclude" type="string">
+		<documentation>
+			Use this argument to exclude a certain js library. This name should reflect the js-source name configured in the certain platform-config section. When excluding default libs, the proper behaviour will not be guaranteed anymore.
+		</documentation>
+	</arg>
 </plugin>
 
 

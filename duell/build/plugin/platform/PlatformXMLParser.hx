@@ -85,8 +85,9 @@ import duell.helpers.LogHelper;
 		var path:haxe.io.Path;
 		if(element.has.path)
 		{
-			path = new haxe.io.Path(resolvePath(element.att.path));
+			path = new haxe.io.Path( resolvePath( element.att.path ) );
 
+			var name       = element.has.name ? element.att.name : "";
 			var oldPackage = null;
 			var newPackage = null;
 			if (element.has.renamePackage)
@@ -101,7 +102,8 @@ import duell.helpers.LogHelper;
 				destination : "libs/"+path.file+"."+path.ext, 
 				oldPackage: oldPackage, 
 				newPackage: newPackage, 
-				applyTemplate : element.has.applyTemplate ? element.att.applyTemplate == "true" : false
+				applyTemplate : element.has.applyTemplate ? element.att.applyTemplate == "true" : false,
+				name : name
 			});
 		}
 	}

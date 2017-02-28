@@ -31,7 +31,8 @@ typedef ScriptItem = {
 	destination : String, 
 	applyTemplate : Bool,
 	oldPackage: String,
-	newPackage: String
+	newPackage: String,
+	name: String
 }
 
 typedef PlatformConfigurationData = {

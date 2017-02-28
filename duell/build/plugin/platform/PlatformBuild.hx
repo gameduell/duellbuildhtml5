@@ -69,6 +69,7 @@ class PlatformBuild
  	private var targetDirectory : String;
  	private var duellBuildHtml5Path : String;
  	private var projectDirectory : String;
+ 	private var excludeFilter:String;
 
  	public function new()
  	{
@@ -115,6 +116,8 @@ class PlatformBuild
 		{
 			Configuration.addParsingDefine("release");
 		}
+
+		excludeFilter = Arguments.isSet("-jsexclude") ? Arguments.get('-jsexclude') : "";
  	}
 
  	public function parse() : Void
@@ -325,8 +328,20 @@ class PlatformBuild
  	}
  	public function prepareHtml5Build() : Void
  	{
+ 		filterJSExcludes();
  	    createDirectoryAndCopyTemplate();
  	}
+
+ 	private function filterJSExcludes():Void {
+ 		if( excludeFilter != "" ) {
+ 			for ( scriptItem in PlatformConfiguration.getData().JS_SOURCES ){
+ 				if( scriptItem.name == excludeFilter ) {
+ 					PlatformConfiguration.getData().JS_SOURCES.remove( scriptItem );
+ 				}
+ 			}
+ 		}
+ 	}
+
  	public function createDirectoryAndCopyTemplate() : Void
  	{
  		/// Create directories
