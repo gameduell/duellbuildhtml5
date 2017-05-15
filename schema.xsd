@@ -4,8 +4,6 @@
            targetNamespace="duell"
            elementFormDefault="qualified">
 
-    <xs:include schemaLocation="https://raw.githubusercontent.com/gameduell/duell/master/schema/common_schema.xsd" />
-
     <xs:complexType name="html5">
         <xs:choice maxOccurs="unbounded">
             <xs:element name="win-size" type="d:WidthHeight"/>
